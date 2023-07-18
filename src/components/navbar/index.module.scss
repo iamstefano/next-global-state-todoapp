@@ -1,0 +1,12 @@
+.Navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: wavy underline;
+  }
+}
