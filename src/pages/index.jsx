@@ -1,14 +1,13 @@
 import Head from "next/head";
-import TodoList from "@/components/todoList";
-import Navbar from "@/components/navbar";
-import { todomock } from "@/helpers/todomock";
-import { useReducer } from "react";
+import Link from "next/link";
+import { useReducer, useContext } from "react";
 import { TodoContext } from "@/state";
-import { TodoReducer } from "@/state/reducers";
+import Navbar from "@/components/navbar";
+import TodoList from "@/components/todoList";
 import styles from "@/styles/Home.module.scss";
 
 export default function Home() {
-  const [state, dispatch] = useReducer(TodoReducer, todomock);
+  const { state } = useContext(TodoContext);
   return (
     <>
       <Head>
@@ -18,12 +17,23 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <TodoContext.Provider value={{ state, dispatch }}>
-        <main className={styles.Home}>
-          <Navbar />
+      <Navbar />
+      {state.username ? (
+        <main className={`${styles.Home}`}>
           <TodoList />
         </main>
-      </TodoContext.Provider>
+      ) : (
+        <div className={styles.login}>
+          <h1>Per favore autenticarsi</h1>
+          <Link href="/login">Login</Link>
+        </div>
+      )}
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {},
+  };
 }

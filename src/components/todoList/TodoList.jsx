@@ -1,14 +1,44 @@
 import Todo from "../todo";
-import { useContext } from "react";
+import { React, useContext, useState } from "react";
 import { TodoContext } from "@/state";
+import styles from "./index.module.scss";
 
 const TodoList = () => {
-  const { state } = useContext(TodoContext);
+  const { state, dispatch } = useContext(TodoContext);
+  const [input, setInput] = useState("");
 
-  console.log(state);
+  const onHandleInput = (e) => setInput(e.target.value);
+  const onSetNewTodo = (e) => {
+    e.preventDefault();
+
+    dispatch({
+      type: "ADD_NEW_TODO",
+      payload: {
+        id: Math.floor(Math.random() * 1000000),
+        content: input,
+        completed: false,
+      },
+    });
+
+    setInput("");
+  };
+
   return (
-    <div>
-      {state.map((todo) => (
+    <div className={styles.TodoList}>
+      <div className={styles.heading}>
+        <h1>All Todos</h1>
+        <form className={styles.input} onSubmit={onSetNewTodo}>
+          <input
+            type="text"
+            name="content"
+            value={input}
+            onChange={onHandleInput}
+            placeholder="Add new..."
+          />
+          <input className={styles.addBtn} type="submit" value="+" />
+        </form>
+      </div>
+      {state?.todos?.map((todo, i) => (
         <Todo data={todo} key={todo.id} />
       ))}
     </div>
