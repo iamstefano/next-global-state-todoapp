@@ -1,11 +1,13 @@
-import { React, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { TodoContext } from "@/state";
-import styles from "@/styles/Login.module.scss";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "@/plugins/firebase";
+import styles from "../styles/Login.module.scss";
 
 export default function Login() {
   const router = useRouter();
-  const { state, dispatch } = useContext(TodoContext);
+  const { dispatch } = useContext(TodoContext);
   const [input, setInput] = useState("");
 
   const onHandleInput = (e) => setInput(e.target.value);
@@ -13,6 +15,12 @@ export default function Login() {
     e.preventDefault();
     dispatch({ type: "SET_USERNAME", payload: input });
     router.push("/");
+  };
+
+  const onHandleGoogleAuth = async () => {
+    const res = await signInWithPopup(auth, provider);
+
+    dispatch({ type: "SET_USERNAME", payload: res.user.email });
   };
 
   return (
@@ -25,6 +33,7 @@ export default function Login() {
         placeholder="Insert Username"
       />
       <input type="submit" value="Login" />
+      <button onClick={onHandleGoogleAuth}>Accedi con Google</button>
     </form>
   );
 }
