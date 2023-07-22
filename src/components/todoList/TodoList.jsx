@@ -8,13 +8,13 @@ const TodoList = () => {
   const [input, setInput] = useState("");
 
   const onHandleInput = (e) => setInput(e.target.value);
-  const onSetNewTodo = (e) => {
+  const onSetNewInput = (e) => {
     e.preventDefault();
 
     dispatch({
       type: "ADD_NEW_TODO",
       payload: {
-        id: Math.floor(Math.random() * 1000000),
+        id: Math.floor(Math.random() * Math.floor(Math.random() * Date.now())),
         content: input,
         completed: false,
       },
@@ -27,13 +27,13 @@ const TodoList = () => {
     <div className={styles.TodoList}>
       <div className={styles.heading}>
         <h1>All Todos</h1>
-        <form className={styles.input} onSubmit={onSetNewTodo}>
+        <form className={styles.input} onSubmit={onSetNewInput}>
           <input
             type="text"
             name="content"
             value={input}
             onChange={onHandleInput}
-            placeholder="Add new..."
+            placeholder="Add a new todo..."
           />
           <input className={styles.addBtn} type="submit" value="+" />
         </form>
