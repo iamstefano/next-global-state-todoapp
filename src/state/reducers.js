@@ -1,5 +1,10 @@
 export const TodoReducer = (state, action) => {
   switch (action.type) {
+    case "SET_DATABASE":
+      return {
+        ...state,
+        todos: action.payload,
+      };
     case "ADD_NEW_TODO":
       return {
         ...state,

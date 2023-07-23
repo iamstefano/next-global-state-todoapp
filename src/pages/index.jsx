@@ -1,13 +1,19 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useReducer, useContext } from "react";
+import { useContext, useEffect, useLayoutEffect } from "react";
 import { TodoContext } from "@/state";
+import { db } from "../plugins/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import Navbar from "@/components/navbar";
 import TodoList from "@/components/todoList";
 import styles from "@/styles/Home.module.scss";
 
-export default function Home() {
-  const { state } = useContext(TodoContext);
+export default function Home({ data }) {
+  useLayoutEffect(() => {
+    dispatch({ type: "SET_DATABASE", payload: data });
+  }, []);
+
+  const { state, dispatch } = useContext(TodoContext);
   return (
     <>
       <Head>
@@ -24,7 +30,7 @@ export default function Home() {
         </main>
       ) : (
         <div className={styles.login}>
-          <h1>Per favore autenticarsi</h1>
+          <h1>Authentication:</h1>
           <Link href="/login">Login</Link>
         </div>
       )}
@@ -33,7 +39,16 @@ export default function Home() {
 }
 
 export async function getServerSideProps(context) {
+  const data = [];
+  const querySnapshot = await getDocs(collection(db, "todos-list"));
+
+  querySnapshot.forEach((doc) => {
+    data.push({ ...doc.data(), id: doc.id });
+  });
+
   return {
-    props: {},
+    props: {
+      data,
+    },
   };
 }
