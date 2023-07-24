@@ -5,11 +5,17 @@ import { TodoContext } from "@/state";
 import styles from "./index.module.scss";
 
 const Todo = ({ data }) => {
-  const { state, dispatch } = useContext(TodoContext);
+  const { dispatch } = useContext(TodoContext);
 
-  const onHandleClick = () => {
-    confirm("Sei sicuro di voler cambiare stato?") &&
+  const onHandleClick = async () => {
+    if (confirm("Vuoi cambiare stato del tuo to-do?")) {
       dispatch({ type: "SET_TODO_COMPLETED", payload: data.id });
+
+      // Set the "capital" field of the city 'DC'
+      await updateDoc(doc(db, "todos-list", data.id), {
+        completed: !data.completed,
+      });
+    }
   };
 
   const onHandleDelete = (e) => {
@@ -34,7 +40,7 @@ const Todo = ({ data }) => {
         <p>{data.id}</p>
         <h3>{data.content}</h3>
       </div>
-      <p>{data.completed ? "Ottimo lavoro" : "Nuova sfida?"}</p>
+      <p>{data.completed ? "Task completato" : "Nuovo task?"}</p>
     </div>
   );
 };

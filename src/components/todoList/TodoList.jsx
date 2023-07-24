@@ -8,17 +8,21 @@ const TodoList = () => {
   const [input, setInput] = useState("");
 
   const onHandleInput = (e) => setInput(e.target.value);
-  const onSetNewInput = (e) => {
+  const onSetNewInput = async (e) => {
     e.preventDefault();
+
+    const payload = {
+      id: Math.floor(Math.random() * Math.floor(Math.random() * Date.now())),
+      content: input,
+      completed: false,
+    };
 
     dispatch({
       type: "ADD_NEW_TODO",
-      payload: {
-        id: Math.floor(Math.random() * Math.floor(Math.random() * Date.now())),
-        content: input,
-        completed: false,
-      },
+      payload,
     });
+
+    await addDoc(collection(db, "todos-list"), payload);
 
     setInput("");
   };
